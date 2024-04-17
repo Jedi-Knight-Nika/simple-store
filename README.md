@@ -1,1 +1,1 @@
-# ecwid-store
+# Simple Ecwid Store
