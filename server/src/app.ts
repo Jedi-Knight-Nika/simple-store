@@ -1,4 +1,4 @@
-import { startServer } from "./configuration/server";
+import { startServer } from "./configuration/Server";
 import { Server } from "http";
 
 
