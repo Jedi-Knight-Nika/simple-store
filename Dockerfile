@@ -1,4 +1,4 @@
-FROM node:18-slim as client-builder
+FROM node:20-slim as client-builder
 
 RUN apt-get -qq update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -16,7 +16,7 @@ COPY ./client ./
 RUN yarn build
 
 
-FROM node:18-slim as server-builder
+FROM node:20-slim as server-builder
 
 RUN apt-get -qq update && apt-get install -y --no-install-recommends \
     ca-certificates \
