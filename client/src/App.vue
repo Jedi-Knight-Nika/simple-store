@@ -1,18 +1,14 @@
 <template>
   <div>
     <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome f*cking world!" />
+    <p>Welcome f*cking world!</p>
   </div>
 </template>
 
 <script lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-
 export default {
   name: "App",
-  components: {
-    HelloWorld,
-  },
+  components: {},
 };
 </script>
 
