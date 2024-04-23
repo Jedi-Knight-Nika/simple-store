@@ -12,7 +12,14 @@
       "sourceMap": true,
       "baseUrl": ".",
       "types": ["webpack-env"],
-      "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+      "emitDecoratorMetadata": true,
+      "removeComments": true,
+      "noImplicitAny": true,
+      "exactOptionalPropertyTypes": false,
+      "skipDefaultLibCheck": true,
+      "skipLibCheck": true,
+      "strictPropertyInitialization": true,
+      "noImplicitReturns": true
     },
     "include": [
       "src/**/*"
