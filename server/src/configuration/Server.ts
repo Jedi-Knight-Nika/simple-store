@@ -1,21 +1,43 @@
-import express from "express";
-import { createExpressServer, RoutingControllersOptions } from "routing-controllers";
-import * as path from "path";
-// import * as swaggerUiExpress from "swagger-ui-express";
+import express, { Express, Request, Response } from "express";
+import { Server } from "http";
+import { createExpressServer, getMetadataArgsStorage, RoutingControllersOptions } from "routing-controllers";
+import { routingControllersToSpec } from "routing-controllers-openapi";
+import { OpenAPIObject } from "openapi3-ts/dist/oas30";
+import { serve, setup } from "swagger-ui-express";
+import { join } from "path";
 
 import config from "../config";
-import { Server } from "http";
 
+const setUpDocsRoutes = (app: Express, spec: OpenAPIObject) => {
+  app.use("/docs", serve, setup(spec));
+  app.get("/", (req: Request, res: Response) => {
+    res.json(spec);
+  });
+};
+
+const initOpenAPI = (app: Express, routingControllersOptions: RoutingControllersOptions) => {
+  const spec: OpenAPIObject = routingControllersToSpec(getMetadataArgsStorage(), routingControllersOptions, {
+    info: {
+      description: config.OPEN_API.DESCRIPTION,
+      title: config.OPEN_API.TITLE,
+      version: config.OPEN_API.VERSION,
+    },
+  });
+
+  setUpDocsRoutes(app, spec);
+};
+
+const corsOptions = {
+  origin: config.STAGE === "dev" ? "*" : ["http://alloweddomain.com"],
+  methods: ["GET", "PUT", "POST", "DELETE"],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
 const routingControllersOptions = <RoutingControllersOptions>{
-  routePrefix: "/api/v1",
-  controllers: [__dirname + "/../controller/*"],
-  cors: {
-    origin: "*",
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  },
+  routePrefix: `/api/${config.API_VERSION}`,
+  controllers: [join(__dirname, "../controller/*")],
+  cors: corsOptions,
   defaults: {
     paramOptions: {
       required: true,
@@ -24,11 +46,18 @@ const routingControllersOptions = <RoutingControllersOptions>{
 };
 
 export const startServer = (): Server => {
-  const app = createExpressServer(routingControllersOptions);
-  app.use("/", express.static(path.join(__dirname, "../public")));
+  try {
+    const app = createExpressServer(routingControllersOptions);
 
+    app.use("/", express.static(join(__dirname, "../public")));
 
-  return app.listen(config.PORT, () => {
-    console.info(`Running on port ${config.PORT}`);
-  });
+    initOpenAPI(app, routingControllersOptions);
+
+    return app.listen(config.PORT, () => {
+      console.info(`Running on port ${config.PORT}`);
+    });
+  } catch (error) {
+    console.error(`Failed to start server: ${error}`);
+    process.exit(1);
+  }
 };

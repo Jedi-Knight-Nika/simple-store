@@ -1,4 +1,4 @@
-# Simple Ecwid Store
+# Simple Store App
 
 ## Prerequisites
 - Docker

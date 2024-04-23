@@ -1,6 +1,6 @@
 import { Server } from "http";
 
-import { startServer } from "./configuration/Server";
+import { startServer } from "./configuration/server";
 
 (async () => {
   const server: Server = startServer();

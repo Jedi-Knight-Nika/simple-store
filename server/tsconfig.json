@@ -16,7 +16,8 @@
 		"skipDefaultLibCheck": true,
 		"skipLibCheck": true,
 		"strictPropertyInitialization": true,
-		"noImplicitReturns": true
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,   
 	},
 	"exclude": [
 		"node_modules"
