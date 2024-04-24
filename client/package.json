@@ -7,8 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "eslint 'src/**/*.{js,ts,vue}'",
     "format": "prettier --write 'src/**/*.{js,ts,vue}'",
-    "lint-and-format": "yarn lint && yarn format",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run format"
   },
   "dependencies": {
     "core-js": "^3.8.3",
