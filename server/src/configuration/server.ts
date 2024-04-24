@@ -33,16 +33,18 @@ const initOpenAPI = (app: Express, routingControllersOptions: RoutingControllers
   setUpDocsRoutes(app, spec);
 };
 
+const initContainer = (): void => {
+  useContainer(container, {
+    fallbackOnErrors: true,
+  });
+};
+
 const corsOptions = {
   origin: config.STAGE === "dev" ? "*" : ["http://alloweddomain.com"],
   methods: ["GET", "PUT", "POST", "DELETE"],
   preflightContinue: false,
   optionsSuccessStatus: 204,
 };
-
-useContainer(container, {
-  fallbackOnErrors: true,
-});
 
 const routingControllersOptions = <RoutingControllersOptions>{
   routePrefix: `/api/${config.API_VERSION}`,
@@ -58,10 +60,10 @@ const routingControllersOptions = <RoutingControllersOptions>{
 export const startServer = (): Server => {
   try {
     const app = createExpressServer(routingControllersOptions);
-
     app.use("/", express.static(join(__dirname, "../public")));
 
     initOpenAPI(app, routingControllersOptions);
+    initContainer();
 
     return app.listen(config.PORT, () => {
       console.info(`Running on port ${config.PORT}`);
