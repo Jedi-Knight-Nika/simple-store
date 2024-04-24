@@ -7,7 +7,7 @@ import { startServer } from "./configuration/server";
 
   process.on("SIGTERM", () => {
     console.info("SIGTERM signal received.");
-    
+
     server.close();
   });
 })();
