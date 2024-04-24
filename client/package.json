@@ -8,7 +8,7 @@
     "lint": "eslint 'src/**/*.{js,ts,vue}'",
     "format": "prettier --write 'src/**/*.{js,ts,vue}'",
     "typecheck": "tsc --noEmit",
-    "check": "npm run lint && npm run format"
+    "full-check": "npm run lint && npm run format"
   },
   "dependencies": {
     "core-js": "^3.8.3",

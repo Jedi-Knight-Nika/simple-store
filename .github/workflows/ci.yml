@@ -36,9 +36,9 @@ jobs:
     - name: Lint and formatting for client
       run: |
         cd client
-        yarn run check
+        yarn full-check
 
     - name: Lint and formatting for server
       run: |
         cd server
-        yarn run check
+        yarn full-check
