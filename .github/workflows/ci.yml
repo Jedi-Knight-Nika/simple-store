@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies for client
+      run: |
+        cd client
+        yarn install
+
+    - name: Install dependencies for server
+      run: |
+        cd server
+        yarn install
+
+    - name: Lint and formatting for client
+      run: |
+        cd client
+        yarn run lint-and-check
+
+    - name: Lint and formatting for server
+      run: |
+        cd server
+        yarn run lint-and-check
