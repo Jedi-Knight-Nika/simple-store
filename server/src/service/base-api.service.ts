@@ -22,7 +22,7 @@ export abstract class BaseApiService {
     return response.json() as Promise<T>;
   }
 
-  private async initFetch() {
+  private async initFetch(): Promise<void> {
     if (!this.fetch) {
       const { default: fetchModule } = await import("node-fetch");
       this.fetch = fetchModule;
