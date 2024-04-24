@@ -2,13 +2,13 @@ import fetch, { HeadersInit, RequestInit, Response } from "node-fetch";
 import config from "../config";
 
 export abstract class ApiService {
-  private readonly token: string = `Bearer ${process.env.ECWID_TOKEN}`;
+  private readonly bearerToken: string = `Bearer ${config.STORE.TOKEN}`;
   private readonly baseUrl: string = config.STORE.BASE_URL;
 
   private getHeaders(): HeadersInit {
     return {
       Accept: "application/json",
-      Authorization: this.token,
+      Authorization: this.bearerToken,
     };
   }
 
