@@ -1,10 +1,12 @@
 import { JsonController } from "routing-controllers";
 
+// import { inject } from "../configuration/container";
+// import { OrderServiceToken } from "../model";
 // import { OrderService } from "../service";
 
 @JsonController('/order')
 export class OrderController {
-    // constructor(private orderService: OrderService) {}
+    // constructor(@inject(OrderServiceToken) private readonly orderService: OrderService) {}
     
     // public async createOrder(req: Request, res: Response) {
     //     const order = await this.orderService.createOrder(req.body);

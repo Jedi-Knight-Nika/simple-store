@@ -1,10 +1,13 @@
 import { JsonController } from "routing-controllers";
 
+// import { inject } from "../configuration/container";
+// import { CartServiceToken } from "../model";
 // import { CartService } from "../service";
+
 
 @JsonController('/cart')
 export class CartController {
-    // constructor(private cartService: CartService) {}
+    // constructor(@inject(CartServiceToken) private readonly cartService: CartService) {}
     
     // public async getCart(req: Request, res: Response): Promise<void> {
     //     const cart = await this.cartService.getCart();
