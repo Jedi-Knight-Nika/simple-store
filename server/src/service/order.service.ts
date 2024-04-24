@@ -1,8 +1,8 @@
 import { Injectable } from "../configuration/container";
 import { OrderServiceToken } from "../model";
-import { ApiService } from "./api.service";
+import { BaseApiService } from "./base-api.service";
 
 @Injectable(OrderServiceToken)
-export class OrderService extends ApiService {
+export class OrderService extends BaseApiService {
     
 }

@@ -1,9 +1,9 @@
 import { Injectable } from "../configuration/container";
 import { ProductServiceToken } from "../model";
-import { ApiService } from "./api.service";
+import { BaseApiService } from "./base-api.service";
 
 @Injectable(ProductServiceToken)
-export class ProductService extends ApiService {
+export class ProductService extends BaseApiService {
   public ping(): string {
     console.info("pongg");
 

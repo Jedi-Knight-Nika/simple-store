@@ -1,7 +1,7 @@
 import { HeadersInit, RequestInit, Response } from "node-fetch";
 import config from "../config";
 
-export abstract class ApiService {
+export abstract class BaseApiService {
   private readonly bearerToken: string = `Bearer ${config.STORE.TOKEN}`;
   private readonly baseUrl: string = config.STORE.BASE_URL;
 
