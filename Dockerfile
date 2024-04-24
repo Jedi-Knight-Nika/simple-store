@@ -36,7 +36,7 @@ RUN yarn build
 COPY --from=client-builder /app/dist /app/dist/public
 
 
-FROM node:18-slim
+FROM node:20-slim
 
 WORKDIR /app
 

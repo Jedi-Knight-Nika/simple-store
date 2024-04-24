@@ -18,6 +18,8 @@
 		"strictPropertyInitialization": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,   
+		"outDir": "./dist",
+		"rootDir": "./src",
 	},
 	"exclude": [
 		"node_modules"
