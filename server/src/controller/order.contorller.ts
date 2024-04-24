@@ -1,9 +1,12 @@
 import { JsonController } from "routing-controllers";
 
+import { Injectable } from "../configuration/container";
+
 // import { inject } from "../configuration/container";
 // import { OrderServiceToken } from "../model";
 // import { OrderService } from "../service";
 
+@Injectable()
 @JsonController('/order')
 export class OrderController {
     // constructor(@inject(OrderServiceToken) private readonly orderService: OrderService) {}

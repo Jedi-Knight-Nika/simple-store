@@ -1,12 +1,18 @@
 import express, { Express, Request, Response } from "express";
 import { Server } from "http";
-import { createExpressServer, getMetadataArgsStorage, RoutingControllersOptions } from "routing-controllers";
+import {
+  createExpressServer,
+  getMetadataArgsStorage,
+  RoutingControllersOptions,
+  useContainer,
+} from "routing-controllers";
 import { routingControllersToSpec } from "routing-controllers-openapi";
 import { OpenAPIObject } from "openapi3-ts/dist/oas30";
 import { serve, setup } from "swagger-ui-express";
 import { join } from "path";
 
 import config from "../config";
+import { container } from "./container";
 
 const setUpDocsRoutes = (app: Express, spec: OpenAPIObject) => {
   app.use("/docs", serve, setup(spec));
@@ -33,6 +39,10 @@ const corsOptions = {
   preflightContinue: false,
   optionsSuccessStatus: 204,
 };
+
+useContainer(container, {
+  fallbackOnErrors: true,
+});
 
 const routingControllersOptions = <RoutingControllersOptions>{
   routePrefix: `/api/${config.API_VERSION}`,
