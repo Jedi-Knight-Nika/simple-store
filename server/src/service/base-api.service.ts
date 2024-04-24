@@ -1,11 +1,11 @@
-import { HeadersInit, RequestInit, Response } from "node-fetch";
+import fetch, { HeadersInit, RequestInit, Response } from "node-fetch";
+
 import config from "../config";
+import { InternalServerError } from "../model";
 
 export abstract class BaseApiService {
   private readonly bearerToken: string = `Bearer ${config.STORE.TOKEN}`;
-  private readonly baseUrl: string = config.STORE.BASE_URL;
-
-  private fetch!: typeof import("node-fetch").default;
+  private readonly baseUrl: string = `${config.STORE.BASE_URL}/${config.STORE.ID}`;
 
   private getHeaders(): HeadersInit {
     return {
@@ -21,25 +21,22 @@ export abstract class BaseApiService {
 
     return response.json() as Promise<T>;
   }
-
-  private async initFetch(): Promise<void> {
-    if (!this.fetch) {
-      const { default: fetchModule } = await import("node-fetch");
-      this.fetch = fetchModule;
-    }
-  }
-
   private async httpRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
-    await this.initFetch();
+    try {
+      const finalOptions: RequestInit = {
+        headers: this.getHeaders(),
+        ...options,
+      };
 
-    const finalOptions: RequestInit = {
-      headers: this.getHeaders(),
-      ...options,
-    };
+      const response: Response = await fetch(`${this.baseUrl}/${path}`, finalOptions);
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      console.error(`Error making HTTP request to ${path}:`, error);
 
-    const response: Response = await this.fetch(`${this.baseUrl}/${path}`, finalOptions);
-
-    return this.handleResponse<T>(response);
+      throw new InternalServerError(
+        `Failed to make HTTP request: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    }
   }
 
   public async get<T>(path: string, options?: RequestInit): Promise<T> {
