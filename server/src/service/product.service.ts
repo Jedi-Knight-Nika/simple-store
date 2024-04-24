@@ -1,12 +1,6 @@
 import { Injectable } from "../configuration/container";
+import { Product, ProductDetails, ProductHttpResponse, ProductImageDetails, ProductServiceToken } from "../model";
 import { BaseApiService } from "./base-api.service";
-import {
-  Product,
-  ProductDetails,
-  ProductHttpResponse,
-  ProductImageDetails,
-  ProductServiceToken,
-} from "../model";
 
 @Injectable(ProductServiceToken)
 export class ProductService extends BaseApiService {
@@ -19,16 +13,19 @@ export class ProductService extends BaseApiService {
 
     const items = result?.items ?? [];
 
-    return items.map((item: ProductDetails): Product => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      images: item.media?.images?.map((image: ProductImageDetails) => ({
-        id: image.id,
-        isMain: image.isMain,
-        url: image.imageOriginalUrl,
-      })) ?? [],
-    }));
+    return items.map(
+      (item: ProductDetails): Product => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        images:
+          item.media?.images?.map((image: ProductImageDetails) => ({
+            id: image.id,
+            isMain: image.isMain,
+            url: image.imageOriginalUrl,
+          })) ?? [],
+      }),
+    );
   }
 
   public async details(): Promise<ProductDetails | null> {

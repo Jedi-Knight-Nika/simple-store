@@ -19,4 +19,9 @@ export class ProductController {
   async list() {
     return await this.productService.list();
   }
+  
+  @Get("/:id")
+  async details() {
+    return await this.productService.details();
+  }
 }
