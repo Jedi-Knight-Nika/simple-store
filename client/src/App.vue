@@ -1,24 +1,78 @@
 <template>
-  <div>
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <p>Welcome f*cking world!</p>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>Vue Example</h1>
+    </header>
+    
+    <main class="card-container">
+      <div class="card" v-for="item in items" :key="item.id">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+    </main>
+    
+    <footer class="app-footer">
+      <p>© 2024 Vue Simple Template. All rights reserved.</p>
+    </footer>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-  name: "App",
-  components: {},
-};
+  name: 'App',
+  data() {
+    return {
+      items: [
+        { id: 1, name: 'Item One', description: 'This is the description for item one.' },
+        { id: 2, name: 'Item Two', description: 'This is the description for item two.' },
+        { id: 3, name: 'Item Three', description: 'This is the description for item three.' }
+      ]
+    };
+  }
+}
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<style scoped>
+.app-container {
+  font-family: Arial, sans-serif;
+}
+
+.app-header {
+  background: #333;
+  color: white;
+  padding: 10px 20px;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+.card-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: 0.3s;
+  width: 30%;
+  margin: 10px;
+  padding: 20px;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.app-footer {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 </style>

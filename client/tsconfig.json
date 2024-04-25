@@ -21,12 +21,13 @@
       "skipLibCheck": true,
       "strictPropertyInitialization": true,
       "noImplicitReturns": true,
+      "allowJs": true,
       "paths": {
         "@/*": ["./src/*"],
       },
     },
     "include": [
-      "src/**/*"
+      "src/**/*",
     ],
     "exclude": ["node_modules"]
 }
