@@ -1,7 +1,7 @@
-import { Get, JsonController } from "routing-controllers";
+import { Get, JsonController, Param } from "routing-controllers";
 
 import { inject, Injectable } from "../configuration/container";
-import { ProductServiceToken } from "../model";
+import { ProductId, ProductServiceToken } from "../model";
 import { ProductService } from "../service";
 
 @Injectable()
@@ -21,7 +21,7 @@ export class ProductController {
   }
   
   @Get("/:id")
-  async details() {
-    return await this.productService.details();
+  async details(@Param('id') id: ProductId) {
+    return await this.productService.details(id);
   }
 }
