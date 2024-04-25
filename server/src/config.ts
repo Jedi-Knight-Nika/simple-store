@@ -9,9 +9,5 @@ export default {
     TITLE: process.env.OPEN_API_TITLE || "Simple Store",
     VERSION: process.env.OPEN_API_VERSION || "1.0.0",
   },
-  STORE: {
-    BASE_URL: process.env.STORE_BASE_URL || "https://app.ecwid.com/api/v3",
-    ID: process.env.STORE_ID || "store_id",
-    TOKEN: process.env.STORE_TOKEN || "store_token",
-  },
+  STORE_BASE_URL: process.env.STORE_BASE_URL || "https://app.ecwid.com/api/v3",
 };

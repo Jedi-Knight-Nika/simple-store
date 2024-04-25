@@ -5,13 +5,13 @@ import { BodyParams, InternalServerError, RequestMethods, QueryParams } from "..
 import config from "../config";
 
 export default abstract class BaseApiService {
-  private readonly bearerToken: string = `Bearer ${config.STORE.TOKEN}`;
-  private readonly baseUrl: string = `${config.STORE.BASE_URL}/${config.STORE.ID}`;
+  #bearerToken: string = `Bearer ${process.env.STORE_TOKEN}`;
+  #storeId: string = process.env.STORE_ID || '';
 
   private getHeaders(): HeadersInit {
     return {
       Accept: "application/json",
-      Authorization: this.bearerToken,
+      Authorization: this.#bearerToken,
     };
   }
 
@@ -20,16 +20,17 @@ export default abstract class BaseApiService {
   }
 
   private getUrl(path: string, queryParams?: QueryParams): URL {
-    const url = new URL(`${this.baseUrl}/${path}`.replace(/([^:]\/)\/+/g, "$1"));
+    const baseUrl = `${config.STORE_BASE_URL}/${this.#storeId}`;
+    const url = new URL(`${baseUrl}/${path}`.replace(/([^:]\/)\/+/g, "$1"));
 
     if (queryParams) {
-      Object.entries(queryParams).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
-      });
+        Object.entries(queryParams).forEach(([key, value]) => {
+            url.searchParams.append(key, encodeURIComponent(value));
+        });
     }
 
     return url;
-  }
+}
 
   private async httpRequest<T>(path: string, options: RequestInit = {}, queryParams?: QueryParams): Promise<T> {
     try {
