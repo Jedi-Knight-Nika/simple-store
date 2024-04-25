@@ -1,13 +1,12 @@
-import { Server } from "http";
-
-import { startServer } from "./configuration/server";
+import AppServer from "./configuration/server";
 
 (async () => {
-  const server: Server = startServer();
+  const server = new AppServer();
+
+  server.start();
 
   process.on("SIGTERM", () => {
     console.info("SIGTERM signal received.");
-
     server.close();
   });
 })();

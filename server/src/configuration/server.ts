@@ -14,62 +14,80 @@ import { join } from "path";
 import config from "../config";
 import { container } from "./container";
 
-const setUpDocsRoutes = (app: Express, spec: OpenAPIObject) => {
-  app.use("/docs", serve, setup(spec));
-  app.get("/", (req: Request, res: Response) => {
-    res.json(spec);
-  });
-};
+export default class AppServer {
+  private app: Express;
 
-const initOpenAPI = (app: Express, routingControllersOptions: RoutingControllersOptions) => {
-  const spec: OpenAPIObject = routingControllersToSpec(getMetadataArgsStorage(), routingControllersOptions, {
-    info: {
-      description: config.OPEN_API.DESCRIPTION,
-      title: config.OPEN_API.TITLE,
-      version: config.OPEN_API.VERSION,
-    },
-  });
-
-  setUpDocsRoutes(app, spec);
-};
-
-const initContainer = (): void => {
-  useContainer(container, {
-    fallbackOnErrors: true,
-  });
-};
-
-const corsOptions = {
-  origin: config.STAGE === "dev" ? "*" : ["http://alloweddomain.com"],
-  methods: ["GET", "PUT", "POST", "DELETE"],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-};
-
-const routingControllersOptions = <RoutingControllersOptions>{
-  routePrefix: `/api/${config.API_VERSION}`,
-  controllers: [join(__dirname, "../controller/*")],
-  cors: corsOptions,
-  defaults: {
-    paramOptions: {
-      required: true,
-    },
-  },
-};
-
-export const startServer = (): Server => {
-  try {
-    const app = createExpressServer(routingControllersOptions);
-    app.use("/", express.static(join(__dirname, "../public")));
-
-    initOpenAPI(app, routingControllersOptions);
-    initContainer();
-
-    return app.listen(config.PORT, () => {
-      console.info(`Running on port ${config.PORT}`);
-    });
-  } catch (error) {
-    console.error(`Failed to start server: ${error}`);
-    process.exit(1);
+  constructor() {
+    this.app = createExpressServer(this.routingControllersOptions);
+    this.initContainer();
+    this.initOpenAPI();
+    this.serveStaticFiles();
   }
-};
+
+  private setUpDocsRoutes(spec: OpenAPIObject): void {
+    this.app.use("/docs", serve, setup(spec));
+    this.app.get("/", (req: Request, res: Response) => {
+      res.json(spec);
+    });
+  }
+
+  private initOpenAPI(): void {
+    const spec: OpenAPIObject = routingControllersToSpec(getMetadataArgsStorage(), this.routingControllersOptions, {
+      info: {
+        description: config.OPEN_API.DESCRIPTION,
+        title: config.OPEN_API.TITLE,
+        version: config.OPEN_API.VERSION,
+      },
+    });
+
+    this.setUpDocsRoutes(spec);
+  }
+
+  private initContainer(): void {
+    useContainer(container, {
+      fallbackOnErrors: true,
+    });
+  }
+
+  private get routingControllersOptions(): RoutingControllersOptions {
+    return {
+      routePrefix: `/api/${config.API_VERSION}`,
+      controllers: [join(__dirname, "../controller/*")],
+      cors: this.corsOptions,
+      defaults: {
+        paramOptions: {
+          required: true,
+        },
+      },
+    };
+  }
+
+  private get corsOptions() {
+    return {
+      origin: config.STAGE === "dev" ? "*" : ["http://alloweddomain.com"],
+      methods: ["GET", "PUT", "POST", "DELETE"],
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+    };
+  }
+
+  private serveStaticFiles(): void {
+    this.app.use("/", express.static(join(__dirname, "../public")));
+  }
+
+  public start(): Server {
+    try {
+      return this.app.listen(config.PORT, () => {
+        console.info(`Running on port ${config.PORT}`);
+      });
+    } catch (error) {
+      console.error(`Failed to start server: ${error}`);
+      process.exit(1);
+    }
+  }
+
+  public close(): void {
+    console.info("Closing server...");
+    process.exit(0);
+  }
+}
