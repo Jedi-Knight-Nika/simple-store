@@ -4,7 +4,7 @@ import { url } from "inspector";
 import { BodyParams, InternalServerError, RequestMethods, QueryParams } from "../model";
 import config from "../config";
 
-export abstract class BaseApiService {
+export default abstract class BaseApiService {
   private readonly bearerToken: string = `Bearer ${config.STORE.TOKEN}`;
   private readonly baseUrl: string = `${config.STORE.BASE_URL}/${config.STORE.ID}`;
 

@@ -1,6 +1,6 @@
 import { Injectable } from "../configuration/container";
 import { Product, ProductDetails, ProductHttpResponse, ProductImageDetails, ProductServiceToken } from "../model";
-import { BaseApiService } from "./base-api.service";
+import BaseApiService from "./base-api.service";
 
 @Injectable(ProductServiceToken)
 export class ProductService extends BaseApiService {
