@@ -12,7 +12,7 @@ export enum Scope {
   Singleton,
 }
 
-export function Injectable(idOrScope?: symbol | Scope, scope?: Scope): ClassDecorator {
+export function Injectable(idOrScope?: symbol | Scope, scope: Scope = Scope.Singleton): ClassDecorator {
   return (target) => {
     const identifier = typeof idOrScope === "symbol" ? idOrScope : target;
     const effectiveScope = typeof idOrScope === "symbol" ? scope : idOrScope;
