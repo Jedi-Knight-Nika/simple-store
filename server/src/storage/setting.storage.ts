@@ -3,23 +3,23 @@ import { SettingStorageToken } from "../model";
 
 @Injectable(SettingStorageToken, Scope.Singleton)
 export class SettingStorage {
-    #widgetEnabled: boolean = true;
+  #widgetEnabled: boolean = true;
 
-    #productsIdsToShow: number[] = [];
+  #productsIdsToShow: number[] = [];
 
-    public getWidgetEnabled(): boolean {
-        return this.#widgetEnabled;
-    }
+  public getWidgetEnabled(): boolean {
+    return this.#widgetEnabled;
+  }
 
-    public setWidgetEnabled(value: boolean): void {
-        this.#widgetEnabled = value;
-    }
+  public setWidgetEnabled(value: boolean): void {
+    this.#widgetEnabled = value;
+  }
 
-    public getProductsIdsToShow(): Array<number> {
-        return this.#productsIdsToShow;
-    }
+  public getProductsIdsToShow(): Array<number> {
+    return this.#productsIdsToShow;
+  }
 
-    public addProductIdToShow(id: number): void {
-        this.#productsIdsToShow.push(id);
-    }
+  public addProductIdToShow(id: number): void {
+    this.#productsIdsToShow.push(id);
+  }
 }

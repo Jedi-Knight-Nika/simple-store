@@ -11,6 +11,7 @@ import {
   ProductServiceToken,
 } from "../model";
 import BaseApiService from "./base-api.service";
+import { Cacheable } from "../util/cache.util";
 
 @Injectable(ProductServiceToken)
 export class ProductService extends BaseApiService {
@@ -26,12 +27,14 @@ export class ProductService extends BaseApiService {
     this.mapImages = this.mapImages.bind(this);
   }
 
+  @Cacheable("product_list")
   public async list(): Promise<Product[]> {
     const result = await this.get<ProductListResponse>("products");
 
     return result?.items?.map(this.transformToProduct) ?? [];
   }
 
+  @Cacheable("product_details")
   public async details(id: number): Promise<ProductDetails | null> {
     const result = await this.get<ProductDetailsResponse>(`products/${id}`);
 
