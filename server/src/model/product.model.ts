@@ -12,31 +12,24 @@ export interface ProductImageDetails extends ProductImage {
   [key: string]: any;
 }
 
-export interface Product {
+export interface ProductBase {
   id: number;
   name: string;
-  price: number;
-  images: ProductImage[];
-  createdAt: Date;
-  updatedAt: Date;
+  price: number | string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
-export interface ProductDetails {
-  id: number;
-  name: string;
-  price: number;
+export interface Product extends ProductBase {
   images: ProductImage[];
-  createdAt: Date;
-  updatedAt: Date;
+}
+
+export interface ProductDetails extends ProductBase {
+  images: ProductImage[];
   [key: string]: any;
 }
 
-export interface ProductDetailsResponse {
-  id: number;
-  name: string;
-  price: number;
-  created: Date | string;
-  updated: Date | string;
+export interface ProductDetailsResponse extends ProductBase {
   [key: string]: any;
 }
 

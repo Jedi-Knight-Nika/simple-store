@@ -1,7 +1,10 @@
 import { inject, Injectable } from "../configuration/container";
+import moment from "moment";
 
 import {
+  CacheName,
   Product,
+  ProductBase,
   ProductDetails,
   ProductDetailsResponse,
   ProductId,
@@ -13,9 +16,8 @@ import {
   SettingStorageToken,
 } from "../model";
 import BaseApiService from "./base-api.service";
-import { Cacheable, CacheEvict } from "../util/cache.util";
+import { Cacheable, CacheEvict, generateCsv } from "../util/";
 import { SettingStorage } from "../storage";
-import { CacheName } from "../model/cache.model";
 
 @Injectable(ProductServiceToken)
 export class ProductService extends BaseApiService {
@@ -31,6 +33,8 @@ export class ProductService extends BaseApiService {
     this.mapImages = this.mapImages.bind(this);
   }
 
+  // Products methods
+
   @Cacheable(CacheName.PRODUCT_LIST)
   public async list(): Promise<Product[]> {
     const result = await this.get<ProductListResponse>("products");
@@ -45,16 +49,32 @@ export class ProductService extends BaseApiService {
     return result ? this.transformToProductDetails(result) : null;
   }
 
+  public async productsToShowinWidgetCsv(): Promise<string | null> {
+    const result = await this.productsToShowinWidget();
+
+    const products = result.map<ProductBase>((item) => ({
+      id: item.id,
+      name: item.name,
+      price: `$${item.price}`,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+    }));
+
+    return await generateCsv(products);
+  }
+
+  // Wdiget producsts methods
+
   @Cacheable(CacheName.WIDGET_PRODUCTS)
   public productsToShowinWidget(): Product[] {
     return this.settingStorage.getProductsToShow();
   }
 
   @Cacheable(CacheName.WIDGET_PRODUCTS)
-  public async addProductToShow(id: ProductId): Promise<Product | undefined> {
+  public async addProductToShow(id: ProductId): Promise<Product | null> {
     const product = await this.details(id);
 
-    if (!product) return;
+    if (!product) return null;
 
     const products = await this.productsToShowinWidget();
 
@@ -79,14 +99,16 @@ export class ProductService extends BaseApiService {
     this.settingStorage.removeProductFromShow(id);
   }
 
+  // Helpers
+
   private transformToProduct(item: ProductListItem): Product {
     return {
       id: item.id,
       name: item.name,
       price: item.price,
       images: this.mapImages(item.media.images),
-      createdAt: new Date(item.created),
-      updatedAt: new Date(item.updated),
+      createdAt: moment(item.created).format('MMMM Do YYYY, h:mm'),
+      updatedAt: moment(item.updated).format('MMMM Do YYYY, h:mm'),
     };
   }
 
@@ -98,8 +120,8 @@ export class ProductService extends BaseApiService {
       images: this?.mapImages(details.media?.images),
       inStock: details.inStock,
       weight: details.weight,
-      createdAt: new Date(details.created),
-      updatedAt: new Date(details.updated),
+      createdAt: moment(details.created).format('MMMM Do YYYY, h:mm'),
+      updatedAt: moment(details.updated).format('MMMM Do YYYY, h:mm'),
     };
   }
 

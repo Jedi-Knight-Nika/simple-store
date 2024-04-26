@@ -1,4 +1,5 @@
-import { Delete, Get, JsonController, Param, Post } from "routing-controllers";
+import { Response } from "express";
+import { Delete, Get, JsonController, Param, Post, Res } from "routing-controllers";
 import { inject, Injectable } from "../configuration/container";
 
 import { ProductId, ProductServiceToken } from "../model";
@@ -12,6 +13,16 @@ export class WidgetController {
   @Get("/")
   async productsToShowinWidget() {
     return this.productService.productsToShowinWidget();
+  }
+
+  @Get("/export")
+  async exportProductsToShow(@Res() response: Response) {
+    const result = await this.productService.productsToShowinWidgetCsv();
+
+    response.header("Content-Type", "text/csv");
+    response.header("Content-Disposition", 'attachment; filename="export.csv"');
+
+    return response.send(result);
   }
 
   @Post("/:id")
