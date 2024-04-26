@@ -24,7 +24,6 @@ export class SettingStorage {
   }
 
   public clearProductsToShow(): void {
-    console.log("eheee")
     this.#productsToShow = [];
   }
 

@@ -15,6 +15,7 @@ import {
 import BaseApiService from "./base-api.service";
 import { Cacheable, CacheEvict } from "../util/cache.util";
 import { SettingStorage } from "../storage";
+import { CacheName } from "../model/cache.model";
 
 @Injectable(ProductServiceToken)
 export class ProductService extends BaseApiService {
@@ -30,27 +31,27 @@ export class ProductService extends BaseApiService {
     this.mapImages = this.mapImages.bind(this);
   }
 
-  @Cacheable("product_list")
+  @Cacheable(CacheName.PRODUCT_LIST)
   public async list(): Promise<Product[]> {
     const result = await this.get<ProductListResponse>("products");
 
     return result?.items?.map(this.transformToProduct) ?? [];
   }
 
-  @Cacheable("product_details")
+  @Cacheable(CacheName.PRODUCT_DETAILS)
   public async details(id: ProductId): Promise<ProductDetails | null> {
     const result = await this.get<ProductDetailsResponse>(`products/${id}`);
 
     return result ? this.transformToProductDetails(result) : null;
   }
 
-  @Cacheable("widget_products")
+  @Cacheable(CacheName.WIDGET_PRODUCTS)
   public productsToShowinWidget(): Product[] {
     return this.settingStorage.getProductsToShow();
   }
 
-  @CacheEvict("widget_products")
-  public async addProductToShow(id: ProductId): Promise<void> {
+  @Cacheable(CacheName.WIDGET_PRODUCTS)
+  public async addProductToShow(id: ProductId): Promise<Product | undefined> {
     const product = await this.details(id);
 
     if (!product) return;
@@ -60,14 +61,20 @@ export class ProductService extends BaseApiService {
     if (!products.some((p) => p.id === id)) {
       this.settingStorage.addProductToShow(product);
     }
+
+    return product;
   }
 
-  @CacheEvict("widget_products")
+  @CacheEvict(CacheName.WIDGET_PRODUCTS, {
+    allEntries: true,
+  })
   public clearProductsToShow(): void {
     this.settingStorage.clearProductsToShow();
   }
 
-  @CacheEvict("widget_products")
+  @CacheEvict(CacheName.WIDGET_PRODUCTS, {
+    allEntries: true,
+  })
   public removeProductFromShow(id: ProductId): void {
     this.settingStorage.removeProductFromShow(id);
   }

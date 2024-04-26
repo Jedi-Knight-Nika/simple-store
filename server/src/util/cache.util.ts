@@ -1,42 +1,60 @@
-import { CacheStorage } from "../storage";
+import { Cache, CacheEvictOptions, CacheOptions } from "../model";
+import { CACHE_STORAGE } from "../storage";
 
-export const Cacheable = (keyPrefix: string = "", ttl: number = 300) => {
-  return function (target: unknown, propertyName: string, descriptor: PropertyDescriptor): void {
-    const method = descriptor.value;
-    const cacheStorage = CacheStorage.getInstance();
+export const Cacheable = (name: string, options?: Partial<CacheOptions>) => {
+  const opts = new CacheOptions(options);
 
-    descriptor.value = async function (...args: any[]): Promise<unknown> {
-      const cacheKey = `${keyPrefix}_${JSON.stringify(args)}`;
+  return (_: unknown, methodName: string, descriptor: PropertyDescriptor): void => {
+    let method = descriptor.value;
 
-      let cached = cacheStorage.get(cacheKey);
+    descriptor.value = async function (...props: unknown[]) {
+      const key = opts.keyGenerator(...props) || "n/k";
 
-      if (cached !== undefined) {
-        console.info(`get from cache with key: ${cacheKey}`);
-        return cached;
+      let methodCache = CACHE_STORAGE.get(name);
+
+      if (methodCache) {
+        const cache = methodCache.get(key);
+
+        if (cache && (opts.duration === undefined || cache.isValid(opts.duration, opts.durationUnit))) {
+          return cache.value;
+        }
+      } else {
+        methodCache = new Map<string, Cache<any>>();
+        CACHE_STORAGE.set(name, methodCache);
       }
 
-      const result = await method.apply(this, args);
+      methodCache.delete(key);
 
-      console.info(`set into cache with key: ${cacheKey}`);
-      cacheStorage.set(cacheKey, result, ttl);
+      const result = await method.apply(this, arguments);
+
+      methodCache.set(key, new Cache(result));
+      opts.log && console.info(`Cache added with name: ${name}, key: ${key}`);
 
       return result;
     };
   };
 };
 
-export const CacheEvict = (keyPrefix: string) => {
-  return function (target: unknown, propertyName: string, descriptor: PropertyDescriptor): void {
-    const method = descriptor.value;
-    const cacheStorage = CacheStorage.getInstance();
+export const CacheEvict = (name: string, options?: Partial<CacheEvictOptions>) => {
+  const opts = new CacheEvictOptions(options);
 
-    descriptor.value = async function (...args: any[]): Promise<unknown> {
-      const cacheKey = `${keyPrefix}_${JSON.stringify(args)}`;
+  return (_: any, methodName: string, descriptor: PropertyDescriptor): void => {
+    let method = descriptor.value;
 
-      console.info(`evict cache with key: ${cacheKey}`);
-      cacheStorage.delete(cacheKey);
+    descriptor.value = async function (...props: any[]) {
+      const res = await method.apply(this, arguments);
+      if (opts.allEntries) {
+        CACHE_STORAGE.delete(name);
 
-      return await method.apply(this, args);
+        opts.log && console.info(`Cache cleared with name: ${name}`);
+      } else {
+        const key = opts.keyGenerator(...props).toString();
+
+        CACHE_STORAGE?.get(name)?.delete(key);
+        opts.log && console.info(`Cache removed with name: ${name}, key: ${key}`);
+      }
+
+      return res;
     };
   };
 };

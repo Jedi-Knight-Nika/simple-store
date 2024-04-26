@@ -1,4 +1,5 @@
 export * from "./api.model";
+export * from "./cache.model";
 export * from "./cart.model";
 export * from "./error.model";
 export * from "./order.model";
