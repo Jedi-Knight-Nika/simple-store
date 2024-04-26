@@ -1,11 +1,11 @@
 import { Injectable, Scope } from "../configuration/container";
-import { SettingStorageToken } from "../model";
+import { Product, SettingStorageToken } from "../model";
 
 @Injectable(SettingStorageToken, Scope.Singleton)
 export class SettingStorage {
   #widgetEnabled: boolean = true;
 
-  #productsIdsToShow: number[] = [];
+  #productsToShow: Product[] = [];
 
   public getWidgetEnabled(): boolean {
     return this.#widgetEnabled;
@@ -15,11 +15,20 @@ export class SettingStorage {
     this.#widgetEnabled = value;
   }
 
-  public getProductsIdsToShow(): Array<number> {
-    return this.#productsIdsToShow;
+  public getProductsToShow(): Product[] {
+    return this.#productsToShow;
   }
 
-  public addProductIdToShow(id: number): void {
-    this.#productsIdsToShow.push(id);
+  public addProductToShow(product: Product): void {
+    this.#productsToShow.push(product);
+  }
+
+  public clearProductsToShow(): void {
+    console.log("eheee")
+    this.#productsToShow = [];
+  }
+
+  public removeProductFromShow(id: number): void {
+    this.#productsToShow = this.#productsToShow.filter((p) => p.id !== id);
   }
 }

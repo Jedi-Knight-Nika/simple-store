@@ -1,17 +1,20 @@
-import { Injectable } from "../configuration/container";
+import { inject, Injectable } from "../configuration/container";
 
 import {
   Product,
   ProductDetails,
   ProductDetailsResponse,
+  ProductId,
   ProductImage,
   ProductImageDetails,
   ProductListItem,
   ProductListResponse,
   ProductServiceToken,
+  SettingStorageToken,
 } from "../model";
 import BaseApiService from "./base-api.service";
-import { Cacheable } from "../util/cache.util";
+import { Cacheable, CacheEvict } from "../util/cache.util";
+import { SettingStorage } from "../storage";
 
 @Injectable(ProductServiceToken)
 export class ProductService extends BaseApiService {
@@ -19,7 +22,7 @@ export class ProductService extends BaseApiService {
     return "pong!";
   }
 
-  constructor() {
+  constructor(@inject(SettingStorageToken) private readonly settingStorage: SettingStorage) {
     super();
 
     this.transformToProduct = this.transformToProduct.bind(this);
@@ -35,10 +38,38 @@ export class ProductService extends BaseApiService {
   }
 
   @Cacheable("product_details")
-  public async details(id: number): Promise<ProductDetails | null> {
+  public async details(id: ProductId): Promise<ProductDetails | null> {
     const result = await this.get<ProductDetailsResponse>(`products/${id}`);
 
     return result ? this.transformToProductDetails(result) : null;
+  }
+
+  @Cacheable("widget_products")
+  public productsToShowinWidget(): Product[] {
+    return this.settingStorage.getProductsToShow();
+  }
+
+  @CacheEvict("widget_products")
+  public async addProductToShow(id: ProductId): Promise<void> {
+    const product = await this.details(id);
+
+    if (!product) return;
+
+    const products = await this.productsToShowinWidget();
+
+    if (!products.some((p) => p.id === id)) {
+      this.settingStorage.addProductToShow(product);
+    }
+  }
+
+  @CacheEvict("widget_products")
+  public clearProductsToShow(): void {
+    this.settingStorage.clearProductsToShow();
+  }
+
+  @CacheEvict("widget_products")
+  public removeProductFromShow(id: ProductId): void {
+    this.settingStorage.removeProductFromShow(id);
   }
 
   private transformToProduct(item: ProductListItem): Product {

@@ -25,7 +25,6 @@ export const Cacheable = (keyPrefix: string = "", ttl: number = 300) => {
   };
 };
 
-
 export const CacheEvict = (keyPrefix: string) => {
   return function (target: unknown, propertyName: string, descriptor: PropertyDescriptor): void {
     const method = descriptor.value;
@@ -40,4 +39,4 @@ export const CacheEvict = (keyPrefix: string) => {
       return await method.apply(this, args);
     };
   };
-}
+};
