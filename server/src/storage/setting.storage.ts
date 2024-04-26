@@ -7,19 +7,19 @@ export class SettingStorage {
 
     #productsIdsToShow: number[] = [];
 
-    getWidgetEnabled(): boolean {
+    public getWidgetEnabled(): boolean {
         return this.#widgetEnabled;
     }
 
-    setWidgetEnabled(value: boolean): void {
+    public setWidgetEnabled(value: boolean): void {
         this.#widgetEnabled = value;
     }
 
-    getProductsIdsToShow(): Array<number> {
+    public getProductsIdsToShow(): Array<number> {
         return this.#productsIdsToShow;
     }
 
-    addProductIdToShow(id: number): void {
+    public addProductIdToShow(id: number): void {
         this.#productsIdsToShow.push(id);
     }
 }
