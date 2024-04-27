@@ -1,5 +1,4 @@
 import { inject, Injectable } from "../configuration/container";
-import moment from "moment";
 
 import {
   Product,
@@ -15,7 +14,7 @@ import {
   SettingStorageToken,
 } from "../model";
 import BaseApiService from "./base-api.service";
-import { Cacheable, CacheName, generateCsv } from "../util";
+import { Cacheable, CacheName, formatDate, generateCsv } from "../util";
 import { SettingStorage } from "../storage";
 
 @Injectable(ProductServiceToken)
@@ -100,8 +99,8 @@ export class ProductService extends BaseApiService {
       price: item.price,
       description: item.description,
       images: this.mapImages(item.media.images),
-      createdAt: this.formatDate(item.created),
-      updatedAt: this.formatDate(item.updated),
+      createdAt: formatDate(item.created),
+      updatedAt: formatDate(item.updated),
     };
   }
 
@@ -114,8 +113,8 @@ export class ProductService extends BaseApiService {
       images: this.mapImages(details.media?.images),
       inStock: details.inStock as boolean,
       weight: details.weight,
-      createdAt: this.formatDate(details.created),
-      updatedAt: this.formatDate(details.updated),
+      createdAt: formatDate(details.created),
+      updatedAt: formatDate(details.updated),
     };
   }
 
@@ -127,9 +126,5 @@ export class ProductService extends BaseApiService {
         url: imageOriginalUrl as string,
       })) ?? []
     );
-  }
-
-  private formatDate(date: string | Date): string {
-    return moment(new Date(date)).format("MM-DD-YYYY");
   }
 }
