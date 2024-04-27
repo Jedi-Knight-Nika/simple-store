@@ -1,9 +1,9 @@
 export const ProductServiceToken = Symbol("ProductService");
 
-export type ProductId = number;
-
 type Price = number | string;
 type ProductDate = Date | string;
+
+export type ProductId = number;
 
 export interface ProductImage {
   id: number;

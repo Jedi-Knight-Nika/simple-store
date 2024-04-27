@@ -1,51 +1,28 @@
-export const CartServiceToken = Symbol("CartService");
+import { Product, ProductId } from "./product.model";
 
-export type CartId = string;
-export type cartItemId = number;
+export const CartServiceToken = Symbol("CartService");
+export const CartStorageToken = Symbol("CartStorage");
 
 type Price = string | number;
+export type CartItemId = number;
 
-export interface CartItemBase {
-  id: cartItemId;
-  productId: number;
+
+export interface CartItem {
+  id: CartItemId;
+  productId: ProductId;
   quantity: number;
   price: Price;
-  shortDescription: string;
+  description: string;
+  product?: Product;
 }
 
-export interface CartItem extends CartItemBase {
-  createdAt: string;
-  upodatedAt: string;
-  images: string[];
-}
-
-export interface CartItemDetailsResponse extends CartItem {
-  [key: string]: unknown;
-}
-
-export interface CartBase {
-  id: CartId;
+export interface Cart {
   total: Price;
   items: CartItem[];
-  paymentMethod: string;
+  itemsCount?: number;
 }
 
-export interface Cart extends CartBase {
-  createdAt: string;
-  upodatedAt: string;
-}
-
-export interface CartDetailsResponse extends CartBase {
-  createDate: string | Date;
-  updateDate: string | Date;
-  items: CartItemDetailsResponse[];
-  [key: string]: unknown;
-}
-
-export interface CartListResponse {
-  total: number;
-  count: number;
-  offset: number;
-  limit: number;
-  items: CartDetailsResponse[];
+export interface CartItemAddDto {
+  productId: ProductId;
+  quantity: number;
 }
