@@ -2,6 +2,9 @@ export const ProductServiceToken = Symbol("ProductService");
 
 export type ProductId = number;
 
+type Price = number | string;
+type ProductDate = Date | string;
+
 export interface ProductImage {
   id: number;
   isMain: boolean;
@@ -18,23 +21,23 @@ export interface MediaFiles {
 }
 
 export interface ProductBase {
-  id: number;
+  id: ProductId;
   name: string;
-  price: number | string;
+  price: Price;
 }
 
 export interface Product extends ProductBase {
   images: ProductImage[];
   description: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: ProductDate;
+  updatedAt: ProductDate;
 }
 
 export interface ProductDetails extends ProductBase {
   images: ProductImage[];
   description: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: ProductDate;
+  updatedAt: ProductDate;
   [key: string]: unknown;
 }
 
