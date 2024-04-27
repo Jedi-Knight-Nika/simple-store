@@ -1,1 +1,5 @@
-<div></div>
+<template>
+  <div>
+    SettingsPage
+  </div>
+</template>

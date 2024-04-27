@@ -1,35 +1,20 @@
 <template>
-  <div class="app-container">
-    <header class="app-header">
-      <h1>Vue Example</h1>
-    </header>
-    
-    <main class="card-container">
-      <div class="card" v-for="item in items" :key="item.id">
-        <h3>{{ item.name }}</h3>
-        <p>{{ item.description }}</p>
-      </div>
-    </main>
-    
-    <footer class="app-footer">
-      <p>© 2024 Vue Simple Template. All rights reserved.</p>
-    </footer>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
       items: [
-        { id: 1, name: 'Item One', description: 'This is the description for item one.' },
-        { id: 2, name: 'Item Two', description: 'This is the description for item two.' },
-        { id: 3, name: 'Item Three', description: 'This is the description for item three.' }
-      ]
+        { id: 1, name: "Item One", description: "This is the description for item one." },
+        { id: 2, name: "Item Two", description: "This is the description for item two." },
+        { id: 3, name: "Item Three", description: "This is the description for item three." },
+      ],
     };
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -52,7 +37,7 @@ export default {
 }
 
 .card {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: 0.3s;
   width: 30%;
   margin: 10px;
@@ -63,7 +48,7 @@ export default {
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .app-footer {
