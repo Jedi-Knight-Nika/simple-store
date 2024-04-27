@@ -25,12 +25,14 @@ export interface ProductBase {
 
 export interface Product extends ProductBase {
   images: ProductImage[];
+  description: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
 
 export interface ProductDetails extends ProductBase {
   images: ProductImage[];
+  description: string;
   createdAt: Date | string;
   updatedAt: Date | string;
   [key: string]: unknown;
@@ -38,8 +40,9 @@ export interface ProductDetails extends ProductBase {
 
 export interface ProductDetailsResponse extends ProductBase {
   media: MediaFiles;
-  created: Date | string;
-  updated: Date | string;
+  description: string;
+  created: string;
+  updated: string;
   [key: string]: unknown;
 }
 
