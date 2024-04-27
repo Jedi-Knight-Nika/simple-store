@@ -57,24 +57,24 @@ export const Cacheable = (name: string, options?: Partial<CacheOptions>) => {
     descriptor.value = async function (...props: unknown[]) {
       const key = opts.keyGenerator(...props) || "n/k";
 
-      let methodCache = CACHE_STORAGE.get(name) as Map<string, unknown>;
+      let cacheItem = CACHE_STORAGE.get(name) as Map<string, unknown>;
 
-      if (methodCache) {
-        const cache = methodCache.get(key) as Cache<unknown>;
+      if (cacheItem) {
+        const cache = cacheItem.get(key) as Cache<unknown>;
 
         if (cache && (opts.duration === undefined || cache.isValid(opts.duration, opts.durationUnit))) {
           return cache.value;
         }
       } else {
-        methodCache = new Map<string, Cache<unknown>>();
-        CACHE_STORAGE.set(name, methodCache);
+        cacheItem = new Map<string, Cache<unknown>>();
+        CACHE_STORAGE.set(name, cacheItem);
       }
 
-      methodCache.delete(key);
+      cacheItem.delete(key);
 
       const result: unknown = await method.apply(this, props);
 
-      methodCache.set(key, new Cache(result));
+      cacheItem.set(key, new Cache(result));
       opts.log && console.info(`Cache added with name: ${name}, key: ${key}`);
 
       return result;
@@ -91,13 +91,13 @@ export const CacheEvict = (name: string, options?: Partial<CacheEvictOptions>) =
     descriptor.value = async function (...props: unknown[]) {
       const res = await method.apply(this, props);
       if (opts.allEntries) {
-        (CACHE_STORAGE as Map<string, Map<string, unknown>>).delete(name);
+        CACHE_STORAGE.delete(name);
 
         opts.log && console.info(`Cache cleared with name: ${name}`);
       } else {
         const key = opts.keyGenerator(...props).toString();
 
-        (CACHE_STORAGE?.get(name) as Map<string, unknown>)?.delete(key);
+        (CACHE_STORAGE?.get(name) as Map<string, Cache<unknown>>)?.delete(key);
         opts.log && console.info(`Cache removed with name: ${name}, key: ${key}`);
       }
 
