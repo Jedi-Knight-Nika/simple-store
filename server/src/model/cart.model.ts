@@ -14,6 +14,7 @@ export interface CartItem {
   price: Price;
   description: string;
   product?: Product;
+  addedAt: string;
 }
 
 export interface Cart {
