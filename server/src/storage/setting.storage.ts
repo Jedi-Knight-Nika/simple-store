@@ -1,4 +1,5 @@
 import { Injectable, Scope } from "../configuration/container";
+
 import { Product, SettingStorageToken } from "../model";
 
 @Injectable(SettingStorageToken, Scope.Singleton)
@@ -7,6 +8,8 @@ export class SettingStorage {
 
   #productsToShow: Product[] = [];
 
+  // widget settings
+
   public getWidgetEnabled(): boolean {
     return this.#widgetEnabled;
   }
@@ -14,6 +17,8 @@ export class SettingStorage {
   public setWidgetEnabled(value: boolean): void {
     this.#widgetEnabled = value;
   }
+
+  // products in widget settings
 
   public getProductsToShow(): Product[] {
     return this.#productsToShow;
