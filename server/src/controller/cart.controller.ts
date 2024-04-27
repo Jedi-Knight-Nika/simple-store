@@ -21,16 +21,19 @@ export class CartController {
 
   @Post()
   public async add(@Body() cartItem: CartItemAddDto) {
-    return await this.cartService.add(cartItem);
+    await this.cartService.add(cartItem);
+    return true;
   }
 
   @Delete()
   public clear() {
-    return this.cartService.clear();
+    this.cartService.clear();
+    return true;
   }
 
   @Delete("/:id")
   public remove(@Param("id") id: CartItemId) {
-    return this.cartService.remove(id);
+    this.cartService.remove(id);
+    return true;
   }
 }

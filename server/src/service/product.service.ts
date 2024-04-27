@@ -73,7 +73,6 @@ export class ProductService extends BaseApiService {
     if (!product) return null;
 
     const products = this.productsToShowinWidget();
-    console.log(products, "____");
 
     if (!products.some((p) => p.id === id)) {
       this.settingStorage.addProductToShow(product);

@@ -11,7 +11,7 @@ export class CartStorage {
   }
 
   public getById(id: CartItemId): CartItem | undefined {
-    return this.#cartItems.find((item) => item.productId === id);
+    return this.#cartItems.find((item) => item.id === id);
   }
 
   public getLastItemId(): CartItemId {

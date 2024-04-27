@@ -1,4 +1,3 @@
-import { NotFoundError } from "routing-controllers";
 import { inject, Injectable } from "../configuration/container";
 
 import {
@@ -12,7 +11,7 @@ import {
 } from "../model";
 import BaseApiService from "./base-api.service";
 import { CartStorage } from "../storage";
-import { convertToNumber, formatDate } from "../util";
+import { Cacheable, CacheName, convertToNumber, formatDate } from "../util";
 
 @Injectable(CartServiceToken)
 export class CartService extends BaseApiService {
@@ -33,8 +32,10 @@ export class CartService extends BaseApiService {
     return this.cartStorage.getById(id);
   }
 
-  public async add(cartItem: CartItemAddDto) {
+  public async add(cartItem: CartItemAddDto): Promise<void> {
     const product = await this.getProductDetails(cartItem.productId);
+
+    if (!product) return;
 
     const cartItemToAdd = {
       id: this.cartStorage.getLastItemId() + 1,
@@ -56,13 +57,10 @@ export class CartService extends BaseApiService {
     this.cartStorage.clear();
   }
 
-  private async getProductDetails(productId: number): Promise<ProductDetailsResponse> {
-    const product = await this.get<ProductDetailsResponse>(`products/${productId}`);
+  @Cacheable(CacheName.PRODUCT_DETAILS)
+  private async getProductDetails(productId: number): Promise<ProductDetailsResponse | null> {
+    const result = await this.get<ProductDetailsResponse>(`products/${productId}`);
 
-    if (!product) {
-      throw new NotFoundError(`Product not found with Id: ${productId}`);
-    }
-
-    return product;
+    return result ?? null;
   }
 }
