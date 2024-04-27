@@ -2,7 +2,6 @@ import { inject, Injectable } from "../configuration/container";
 import moment from "moment";
 
 import {
-  CacheName,
   Product,
   ProductBase,
   ProductDetails,
@@ -16,7 +15,7 @@ import {
   SettingStorageToken,
 } from "../model";
 import BaseApiService from "./base-api.service";
-import { Cacheable, CacheEvict, generateCsv } from "../util/";
+import { Cacheable, CacheEvict, CacheName, generateCsv } from "../util";
 import { SettingStorage } from "../storage";
 
 @Injectable(ProductServiceToken)
@@ -107,8 +106,8 @@ export class ProductService extends BaseApiService {
       name: item.name,
       price: item.price,
       images: this.mapImages(item.media.images),
-      createdAt: moment(item.created).format('MMMM Do YYYY, h:mm'),
-      updatedAt: moment(item.updated).format('MMMM Do YYYY, h:mm'),
+      createdAt: moment(item.created).format("MMMM Do YYYY, h:mm"),
+      updatedAt: moment(item.updated).format("MMMM Do YYYY, h:mm"),
     };
   }
 
@@ -120,8 +119,8 @@ export class ProductService extends BaseApiService {
       images: this?.mapImages(details.media?.images),
       inStock: details.inStock,
       weight: details.weight,
-      createdAt: moment(details.created).format('MMMM Do YYYY, h:mm'),
-      updatedAt: moment(details.updated).format('MMMM Do YYYY, h:mm'),
+      createdAt: moment(details.created).format("MMMM Do YYYY, h:mm"),
+      updatedAt: moment(details.updated).format("MMMM Do YYYY, h:mm"),
     };
   }
 

@@ -1,8 +1,21 @@
 import fetch, { HeadersInit, RequestInit, Response } from "node-fetch";
 import { url } from "inspector";
 
-import { BodyParams, InternalServerError, RequestMethods, QueryParams } from "../model";
 import config from "../config";
+import { InternalServerError } from "../util";
+
+export interface QueryParams {
+  [key: string]: any;
+}
+
+export type BodyParams = any;
+
+enum RequestMethods {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+}
 
 export default abstract class BaseApiService {
   #bearerToken: string = `Bearer ${process.env.STORE_TOKEN}`;
