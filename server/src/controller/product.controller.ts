@@ -10,9 +10,8 @@ export class ProductController {
   constructor(@inject(ProductServiceToken) private readonly productService: ProductService) {}
 
   @Get("/ping")
-  async ping() {
-    console.log("productService", this.productService);
-    return await this.productService.ping();
+  ping() {
+    return this.productService.ping();
   }
 
   @Get()

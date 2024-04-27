@@ -11,7 +11,7 @@ export class WidgetController {
   constructor(@inject(ProductServiceToken) private readonly productService: ProductService) {}
 
   @Get("/")
-  async productsToShowinWidget() {
+  productsToShowinWidget() {
     return this.productService.productsToShowinWidget();
   }
 
@@ -27,18 +27,18 @@ export class WidgetController {
 
   @Post("/:id")
   async addProductToShow(@Param("id") id: ProductId) {
-    this.productService.addProductToShow(id);
+    await this.productService.addProductToShow(id);
     return true;
   }
 
   @Delete("/clear")
-  async clearProductsToShow() {
+  clearProductsToShow() {
     this.productService.clearProductsToShow();
     return true;
   }
 
   @Delete("/:id/remove")
-  async removeProductFromShow(@Param("id") id: ProductId) {
+  removeProductFromShow(@Param("id") id: ProductId) {
     this.productService.removeProductFromShow(id);
     return true;
   }

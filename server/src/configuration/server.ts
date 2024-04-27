@@ -18,10 +18,14 @@ export default class AppServer {
   private app: Express;
 
   constructor() {
-    this.app = createExpressServer(this.routingControllersOptions);
+    this.app = this.createserver();
     this.initContainer();
     this.initOpenAPI();
     this.serveStaticFiles();
+  }
+
+  private createserver(): Express {
+    return createExpressServer(this.routingControllersOptions) as Express;
   }
 
   private setUpDocsRoutes(spec: OpenAPIObject): void {
@@ -76,14 +80,9 @@ export default class AppServer {
   }
 
   public start(): Server {
-    try {
-      return this.app.listen(config.PORT, () => {
-        console.info(`Running on port ${config.PORT}`);
-      });
-    } catch (error) {
-      console.error(`Failed to start server: ${error}`);
-      process.exit(1);
-    }
+    return this.app.listen(config.PORT, () => {
+      console.info(`Running on port ${config.PORT}`);
+    });
   }
 
   public close(): void {

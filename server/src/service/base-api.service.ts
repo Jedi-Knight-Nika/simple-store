@@ -5,10 +5,10 @@ import { url } from "inspector";
 import config from "../config";
 
 export interface QueryParams {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-export type BodyParams = any;
+export type BodyParams = unknown;
 
 enum RequestMethods {
   GET = "GET",
@@ -32,7 +32,7 @@ export default abstract class BaseApiService {
     if (response.ok) {
       return response.json() as Promise<T>;
     } else {
-      const errorResponse = await response.json();
+      const errorResponse = (await response.json()) as Error;
 
       switch (response.status) {
         case 400:
@@ -51,7 +51,7 @@ export default abstract class BaseApiService {
 
     if (queryParams) {
       Object.entries(queryParams).forEach(([key, value]) => {
-        url.searchParams.append(key, encodeURIComponent(value));
+        url.searchParams.append(key, encodeURIComponent(value as string | number | boolean));
       });
     }
 
@@ -72,7 +72,6 @@ export default abstract class BaseApiService {
     } catch (error) {
       console.error(`Error making HTTP request to ${url.toString()}:`, error);
 
-      console.log("sdsdsd");
       throw new InternalServerError(
         `Failed to make HTTP request: ${error instanceof Error ? error.message : "Unknown error"}`,
       );

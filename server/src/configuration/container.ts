@@ -23,7 +23,8 @@ export function Injectable(idOrScope?: symbol | Scope, scope: Scope = Scope.Sing
 
     decorate(injectable(), target);
 
-    const binding = container.bind(identifier).to(target as any);
+    // @ts-expect-error disable-next-line
+    const binding = container.bind(identifier).to(target);
     switch (effectiveScope) {
       case Scope.Transient:
         binding.inTransientScope();

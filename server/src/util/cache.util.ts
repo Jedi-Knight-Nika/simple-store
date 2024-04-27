@@ -24,8 +24,8 @@ export class Cache<T> {
 
 abstract class CacheBaseOptions {
   readonly log: boolean = true;
-  readonly keyGenerator: (...props: any) => string = (...args: any[]) => {
-    return args.map((p) => p.toString()).join("-");
+  readonly keyGenerator: (...props: unknown[]) => string = (...args: unknown[]): string => {
+    return args.map((p) => p?.toString()).join("-");
   };
 }
 
@@ -52,27 +52,27 @@ export const Cacheable = (name: string, options?: Partial<CacheOptions>) => {
   const opts = new CacheOptions(options);
 
   return (_: unknown, methodName: string, descriptor: PropertyDescriptor): void => {
-    let method = descriptor.value;
+    const method = descriptor.value as (...args: unknown[]) => unknown;
 
     descriptor.value = async function (...props: unknown[]) {
       const key = opts.keyGenerator(...props) || "n/k";
 
-      let methodCache = CACHE_STORAGE.get(name);
+      let methodCache = CACHE_STORAGE.get(name) as Map<string, unknown>;
 
       if (methodCache) {
-        const cache = methodCache.get(key);
+        const cache = methodCache.get(key) as Cache<unknown>;
 
         if (cache && (opts.duration === undefined || cache.isValid(opts.duration, opts.durationUnit))) {
           return cache.value;
         }
       } else {
-        methodCache = new Map<string, Cache<any>>();
+        methodCache = new Map<string, Cache<unknown>>();
         CACHE_STORAGE.set(name, methodCache);
       }
 
       methodCache.delete(key);
 
-      const result = await method.apply(this, arguments);
+      const result: unknown = await method.apply(this, props);
 
       methodCache.set(key, new Cache(result));
       opts.log && console.info(`Cache added with name: ${name}, key: ${key}`);
@@ -85,19 +85,19 @@ export const Cacheable = (name: string, options?: Partial<CacheOptions>) => {
 export const CacheEvict = (name: string, options?: Partial<CacheEvictOptions>) => {
   const opts = new CacheEvictOptions(options);
 
-  return (_: any, methodName: string, descriptor: PropertyDescriptor): void => {
-    let method = descriptor.value;
+  return (_: unknown, methodName: string, descriptor: PropertyDescriptor): void => {
+    const method = descriptor.value as (...args: unknown[]) => unknown;
 
-    descriptor.value = async function (...props: any[]) {
-      const res = await method.apply(this, arguments);
+    descriptor.value = async function (...props: unknown[]) {
+      const res = await method.apply(this, props);
       if (opts.allEntries) {
-        CACHE_STORAGE.delete(name);
+        (CACHE_STORAGE as Map<string, Map<string, unknown>>).delete(name);
 
         opts.log && console.info(`Cache cleared with name: ${name}`);
       } else {
         const key = opts.keyGenerator(...props).toString();
 
-        CACHE_STORAGE?.get(name)?.delete(key);
+        (CACHE_STORAGE?.get(name) as Map<string, unknown>)?.delete(key);
         opts.log && console.info(`Cache removed with name: ${name}, key: ${key}`);
       }
 

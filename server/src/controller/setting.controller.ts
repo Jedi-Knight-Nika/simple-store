@@ -9,12 +9,12 @@ export class SettingController {
   constructor(@inject(SettingServiceToken) private readonly settingService: SettingService) {}
 
   @Get("/widget-enabled")
-  public async getWidgetEnabled() {
+  public getWidgetEnabled() {
     return this.settingService.getWidgetEnabled();
   }
 
   @Put("/widget-enabled/:enabled")
-  public async setWidgetEnabled(@Param("enabled") enabled: boolean) {
+  public setWidgetEnabled(@Param("enabled") enabled: boolean) {
     this.settingService.setWidgetEnabled(enabled);
 
     return { enabled };

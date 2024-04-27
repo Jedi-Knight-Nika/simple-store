@@ -9,28 +9,38 @@ export interface ProductImage {
 }
 
 export interface ProductImageDetails extends ProductImage {
-  [key: string]: any;
+  [key: string]: unknown;
+}
+
+export interface MediaFiles {
+  images: ProductImageDetails[];
+  [key: string]: unknown;
 }
 
 export interface ProductBase {
   id: number;
   name: string;
   price: number | string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
 }
 
 export interface Product extends ProductBase {
   images: ProductImage[];
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface ProductDetails extends ProductBase {
   images: ProductImage[];
-  [key: string]: any;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  [key: string]: unknown;
 }
 
 export interface ProductDetailsResponse extends ProductBase {
-  [key: string]: any;
+  media: MediaFiles;
+  created: Date | string;
+  updated: Date | string;
+  [key: string]: unknown;
 }
 
 export interface ProductListItem extends ProductDetailsResponse {}

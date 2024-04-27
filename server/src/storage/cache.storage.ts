@@ -1,1 +1,1 @@
-export const CACHE_STORAGE: Map<string, any> = new Map();
+export const CACHE_STORAGE: Map<string, unknown> = new Map();
