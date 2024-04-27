@@ -1,8 +1,8 @@
 import fetch, { HeadersInit, RequestInit, Response } from "node-fetch";
+import { BadRequestError, InternalServerError, NotFoundError } from "routing-controllers";
 import { url } from "inspector";
 
 import config from "../config";
-import { InternalServerError } from "../util";
 
 export interface QueryParams {
   [key: string]: any;
@@ -28,8 +28,21 @@ export default abstract class BaseApiService {
     };
   }
 
-  private handleResponse<T>(response: Response): Promise<T> {
-    return response.json() as Promise<T>;
+  private async handleResponse<T>(response: Response): Promise<T> {
+    if (response.ok) {
+      return response.json() as Promise<T>;
+    } else {
+      const errorResponse = await response.json();
+
+      switch (response.status) {
+        case 400:
+          throw new BadRequestError(errorResponse.message || "Bad request error");
+        case 404:
+          throw new NotFoundError(errorResponse.message || "Resource not found");
+        default:
+          throw new InternalServerError(errorResponse.message || "Internal server error");
+      }
+    }
   }
 
   private getUrl(path: string, queryParams?: QueryParams): URL {
@@ -59,6 +72,7 @@ export default abstract class BaseApiService {
     } catch (error) {
       console.error(`Error making HTTP request to ${url.toString()}:`, error);
 
+      console.log("sdsdsd");
       throw new InternalServerError(
         `Failed to make HTTP request: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
