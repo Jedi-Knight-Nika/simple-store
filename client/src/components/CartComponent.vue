@@ -32,7 +32,7 @@
   }
   
   .icon {
-    fill: #333; /* Change the color as needed */
+    fill: #333;
   }
   
   .badge {
