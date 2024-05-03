@@ -16,6 +16,8 @@ import { container } from "./container";
 
 export default class AppServer {
   private app: Express;
+  
+  #allowedOrigin = process.env.ALLOWED_ORIGIN;
 
   constructor() {
     this.app = this.createserver();
@@ -68,7 +70,7 @@ export default class AppServer {
 
   private get corsOptions() {
     return {
-      origin: config.STAGE === "dev" ? "*" : ["http://alloweddomain.com"],
+      origin: config.STAGE === "dev" ? "*" : [this.#allowedOrigin],
       methods: ["GET", "PUT", "POST", "DELETE"],
       preflightContinue: false,
       optionsSuccessStatus: 204,
