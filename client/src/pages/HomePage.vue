@@ -6,16 +6,24 @@
         <button @click="addToCart(product)">Buy Now</button>
       </div>
     </div>
+    <CartComponent />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import axios from "axios";
+import { defineComponent, onMounted, Ref, ref } from "vue";
+import { useStore } from "vuex";
+import { API } from "../utils/API";
+import CartComponent from "../components/CartComponent.vue";
 
 export default defineComponent({
   name: "ProductList",
+  components: {
+    CartComponent
+  },
   setup() {
+    const store = useStore();
+
     interface Product {
       id: number;
       name: string;
@@ -26,7 +34,7 @@ export default defineComponent({
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/v1/products");
+        const response = await API.get("products");
 
         products.value = response.data;
       } catch (error) {
@@ -38,8 +46,8 @@ export default defineComponent({
       await fetchProducts();
     });
 
-    const addToCart = (product: any) => {
-      console.log("Adding to cart:", product.id);
+    const addToCart = (product: Product) => {
+      store.dispatch("addToCart", { productId: product.id, quantity: 1 });
     };
 
     return {
