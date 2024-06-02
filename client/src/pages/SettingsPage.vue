@@ -1,5 +1,3 @@
 <template>
-  <div>
-    SettingsPage
-  </div>
+  <div>SettingsPage</div>
 </template>

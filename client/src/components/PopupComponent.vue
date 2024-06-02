@@ -5,8 +5,8 @@
     </div>
   </transition>
 </template>
-  
-  <script>
+
+<script>
 import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
 
@@ -22,8 +22,8 @@ export default defineComponent({
   },
 });
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;

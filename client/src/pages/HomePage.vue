@@ -16,19 +16,19 @@ import { useStore } from "vuex";
 import { API } from "../utils/API";
 import CartComponent from "../components/CartComponent.vue";
 
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
 export default defineComponent({
   name: "ProductList",
   components: {
-    CartComponent
+    CartComponent,
   },
   setup() {
     const store = useStore();
-
-    interface Product {
-      id: number;
-      name: string;
-      price: number;
-    }
 
     const products: Ref<Product[]> = ref([]);
 

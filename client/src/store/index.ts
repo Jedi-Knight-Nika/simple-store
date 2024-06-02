@@ -45,7 +45,7 @@ const store = createStore({
         await API.post("carts", {
           productId,
           quantity,
-        }).then((res) => {
+        }).then(() => {
           commit("incrementCartItemCount");
           commit("setPopupMessage", "Item added");
           commit("setPopupSuccess", true);

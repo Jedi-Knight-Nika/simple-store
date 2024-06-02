@@ -1,5 +1,3 @@
 <template>
- <div>
-    CartPage
-  </div>
+  <div>CartPage</div>
 </template>
